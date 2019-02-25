@@ -24,7 +24,7 @@
     "preferred-install": "dist"
   },
   "require": {
-
+    "qcloudsms/qcloudsms_php": "0.1.*"
   },
   "scripts": {
     "post-autoload-dump": [

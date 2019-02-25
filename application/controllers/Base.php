@@ -6,7 +6,7 @@
  * Time: 10:00
  */
 /**
- * 控制器公共基类
+ * 控制器-公共基类
  * Created by PhpStorm.
  * User: baiyan
  * Date: 2018-11-27

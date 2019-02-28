@@ -13,6 +13,9 @@ use Nos\Http\Request;
 use Nos\Comm\Config;
 use Nos\Comm\Redis;
 use Nos\Comm\Log;
+use Yansongda\Pay\Pay;
+use Nos\Exception\OperateFailedException;
+use Yaf\Config\Ini;
 
 class Wx{
 
@@ -35,13 +38,15 @@ class Wx{
     }
 
     public static function getOpenid($code){
-        $config = self::getConfig();
-        $appId = $config['APP_ID'];
-        $appKey = $config['APP_KEY'];
+        $config = new Ini(APP_PATH . '/config/wx.ini', ini_get('yaf.environ'));
+        $config = $config->toArray();
+        $appId = $config['PAY']['APP_ID'];
+        $appKey = $config['PAY']['APP_KEY'];
+
         $url =  "https://api.weixin.qq.com/sns/jscode2session?appid=$appId&secret=$appKey&js_code=$code&grant_type=authorization_code";
         $res = Request::send('GET',$url);
-        $res = json_decode($res,true);
 
+        $res = json_decode($res,true);
         if (array_key_exists('errmsg',$res)){
             Log::notice('wx|get_openid_from_api_failed|msg:' . json_encode($res));
             throw new OperateFailedException('获取微信授权失败');
@@ -99,5 +104,16 @@ class Wx{
             throw new OperateFailedException('模板消息发送失败');
         }
         return true;
+    }
+
+    /**
+     * 获取支付实例
+     * @return \Yansongda\Pay\Gateways\Wechat
+     * @throws \Nos\Exception\CoreException
+     */
+    public static function getWxPayApp(){
+        $config = self::getConfig();
+        $config = $config['PAY'];
+        return Pay::wechat($config);
     }
  }

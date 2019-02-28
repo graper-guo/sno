@@ -69,4 +69,13 @@ class Order_OrderModel extends BaseModel {
         $data = $this->getList($select, 'where ucid = ?', array($ucid));
         return isset($data[0]) ? $data[0] : array();
     }
+    /**
+     * 根据id获取订单
+     */
+    public function getByOrderId($order_id, $select = array())
+    {
+        $data = $this->getList($select,'where order_id = ?',array($order_id));
+        return isset($data[0]) ? $data[0] : array();
+
+    }
 }

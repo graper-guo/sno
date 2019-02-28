@@ -20,6 +20,7 @@ use Nos\Comm\Log;
 use Nos\Http\Request;
 use Nos\Comm\Redis;
 use Nos\Http\Response;
+use Yaf\Config\Ini;
 
 abstract class BaseController extends Controller_Abstract{
 
@@ -60,19 +61,21 @@ abstract class BaseController extends Controller_Abstract{
         $this->loadModel();//模型载入
     }
 
-    /**
+    /**s
      * 用户授权并返回当前用户对象，自动载入到控制器$user变量中
      * @return object
      */
     protected function auth(){
         $frontToken = Request::header('Authorization');
+
         if (empty($frontToken)) {
             Log::notice('auth|header_token_empty');
             Response::apiUnauthorized();
         }
         try{
-            $key = Config::get('common.JWT');
+            $key = Config::get('wx');
             $user = JWT::decode($frontToken, $key ,['HS256']);
+
         }catch (\Exception $e){
             Log::notice('auth|decode_token_failed|msg:' . $e->getMessage() . '|frontToken:'. $frontToken);
             Response::apiUnauthorized();

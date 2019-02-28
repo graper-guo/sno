@@ -27,7 +27,7 @@ class Common_LoginController extends BaseController
      * 是否需要登录授权
      * @var bool
      */
-    public $needAuth = true;
+    public $needAuth = false;
 
     /*
      * 当前登录用户
@@ -49,8 +49,7 @@ class Common_LoginController extends BaseController
             'code' => 'required',
             'wxCode' => 'required',
             'avatar' => 'required',
-            'nickname' => 'required',
-
+            'nickname' => 'required'
         ));
     }
 
@@ -69,26 +68,31 @@ class Common_LoginController extends BaseController
         $phone = $this->params['phone'];
         $frontCode = $this->params['code'];
         $key = sprintf(self::REDIS_SMS_VERIFY,$phone);
-        $backCode = Redis::set($key);
+        $backCode = Redis::get($key);
         if($frontCode != $backCode){
             Log::notice('sms_error_code'.$key.'frontCode:'.$frontCode.',backCode:',$backCode);
             throw new OperateFailedException("短信验证码验证错误，请重试！");
         }
         $openId = Wx::getOpenid($this->params['wxCode']);
+
         $data = [
           'phone' => $phone,
           'name'  => $this->params['nickname'],
           'avatar' => $this->params['avatar'],
           'openid' => $openId
         ];
+
         $user = $this->getLatestUser($data);
         $token = $this->setToken($user);
         Response::apiSuccess(array('token' => $token));
     }
 
     private function setToken($data){
-        $key = Config::get('common.JWT');
+        $config = new Ini(APP_PATH . '/config/common.ini', ini_get('yaf.environ'));
+        $config = $config->toArray();
+        $key = $config['JWT']['key'];
         $token = JWT::encode($data,$key);
+
         $redisKey = sprintf(self::REDIS_TOKEN_PREFIX, $data['ucid']);
         Redis::set($redisKey, $token, 2678400);
         return $token;
@@ -97,8 +101,9 @@ class Common_LoginController extends BaseController
     private function getLatestUser($data){
         $userModel = new User_UserModel();
         $user = $userModel->getByPhone($data['phone']);
+
         if(!$user){
-            $user->creat($data);
+            $userModel->create($data);
         }else{
             $userModel->updateByPhone($data['phone'], $data);
             $user = $userModel->getByphone($data['phone']);

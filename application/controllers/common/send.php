@@ -23,7 +23,7 @@ class Common_SendController extends BaseController
      * 是否需要登录授权
      * @var bool
      */
-    public $needAuth = true;
+    public $needAuth = false;
 
     /*
      * 当前登录用户
@@ -64,12 +64,13 @@ class Common_SendController extends BaseController
 
         try {
             $ssender = new SmsSingleSender($config['appId'], $config['appKey']);
-            $code = rand(1000, 9999);
+            //$code = rand(1000, 9999);
+            $code = "1234";
             $params = [$code, "1"];//数组具体的元素个数和模板中变量个数必须一致，例如事例中 templateId:5678对应一个变量，参数数组中元素个数也必须是一个
             $result = $ssender->sendWithParam("86", $phoneNumbers[0], $config['templateId'], $params,'' , "", "");  // 签名参数未提供或者为空时，会使用默认签名发送短信
 
             $key = sprintf(self::REDIS_SMS_VERIFY, $phoneNumbers[0]);
-            Redis::set($key, $code, 61);
+            Redis::set($key, $code, 6100);
             $rsp = json_decode($result, true);
 
             Response::apiResponse($rsp['result'], $rsp['errmsg']);

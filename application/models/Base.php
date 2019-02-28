@@ -175,15 +175,15 @@ class BaseModel{
         $keys = array_keys($data);
         $vals = array_values($data);
         foreach ($keys as &$key){
-            $key .= '=?';
+            $key .= '= ?';
         }
         $keyStr = join(',', $keys);
         $sql = "update {$this->table} set {$keyStr} " . $ext;
         $rows = Db::update($sql, array_merge($vals, $bind));
-        if (!$rows){
-            Log::fatal('baseModel|update_failed|$data:'  . '|sql:' . $sql . '|bind:' . json_encode($bind));
-            throw new OperateFailedException('更新失败');
-        }
+//        if (!$rows){
+//            Log::fatal('baseModel|update_failed|$data:'  . '|sql:' . $sql . '|bind:' . json_encode($bind));
+//            throw new OperateFailedException('更新失败');
+//        }
         return $rows;
     }
 }

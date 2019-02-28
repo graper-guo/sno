@@ -34,7 +34,8 @@ class Config{
         }else{
             $file = $key;
         }
-        $file = ROOT_PATH . '/config/' . ucfirst($file) . '.php';
+        $file = ROOT_PATH . '/config/' . $file . '.php';
+
         if (!file_exists($file)){
             Log::fatal('config|file_not_exists|path:' . $file);
             throw new CoreException();

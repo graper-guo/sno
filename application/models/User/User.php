@@ -26,4 +26,15 @@ class User_UserModel extends BaseModel
     public function updateByPhone($phone, $data){
         return $this->update($data, 'where phone = ?', $phone);
     }
+
+    public function getRentId($id, $select = array()){
+        $data = $this->getList($select, 'where renter = ?', array($id));
+        return isset($data[0]) ? $data[0] : array();
+    }
+
+
+    public function getHireId($id, $select = array()){
+        $data = $this->getList($select, 'where hirer = ?', array($id));
+        return isset($data[0]) ? $data[0] : array();
+    }
 }

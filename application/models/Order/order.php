@@ -11,7 +11,7 @@ class Order_OrderModel extends BaseModel {
     //status  订单状态
     //score  订单积分
     //renter,hirer 出租人,租赁人
-    public $table = 'order';
+    public $table = 'orders';
     /**
      * 订单状态
      */
@@ -74,7 +74,7 @@ class Order_OrderModel extends BaseModel {
      */
     public function getByOrderId($order_id, $select = array())
     {
-        $data = $this->getList($select,'where order_id = ?',array($order_id));
+        $data = $this->getList($select,'where id = ?',array($order_id));
         return isset($data[0]) ? $data[0] : array();
 
     }

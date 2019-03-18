@@ -32,9 +32,9 @@ class Order_GetOrderDetailController extends BaseController
 
     public function indexAction()
     {
-        $order = $this->orderModel->getByUcid($this->params['id']);
-        $renter = $this->userModel->getByUcid($order['renter']);
-        $hirer = $this->userModel->getByUcid($order['hirer']);
+        $order = $this->orderModel->getById($this->params['id']);
+        $renter = $this->userModel->getById($order['renter']);
+        $hirer = $this->userModel->getById($order['hirer']);
         Response::apiSuccess(array_merge($order, array(
             'renter' => $renter,
             'hirer' => $hirer

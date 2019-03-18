@@ -23,7 +23,7 @@ class Pay_TransferController extends BaseController{
     public function checkParam()
     {
         Validator::make($this->params,array(
-            'order_id' => 'required'
+            'id' => 'required'
         ));
     }
     public function indexAction()

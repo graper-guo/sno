@@ -10,7 +10,7 @@ use Nos\Http\Request;
 use Nos\Http\Response;
 use Nos\Comm\Page;
 
-class Order_GetRentOrderController extends BaseController
+class Order_GetOrdersController extends BaseController
 {
 
     public $needAuth = true;
@@ -21,8 +21,10 @@ class Order_GetRentOrderController extends BaseController
     {
         $page = Request::get('page');
         $size = Request::get('size');
+        $type = Request::get("type");
         $this->params['page'] = !empty($page) ? $page : 1;
         $this->params['size'] = !empty($size) ? $size : 10;
+        $this->params['type'] = $type;
     }
 
     public function loadModel()
@@ -34,13 +36,16 @@ class Order_GetRentOrderController extends BaseController
     public function indexAction()
     {
         $size = $this->params['size'];
+        $type = $this->params['type'];
+
         $offset = Page::getLimitData($this->params['page'],$size);
         $select = array('id','title','status','content','price','utime','renter');
-        $text1 = "where renter =? and deleted is null order by utime desc limit {$offset},{$size}";
-        $orders = $this->orderModel->getList($select,$text1,array($this->user->id));
+        $text1 = "where class = ? and deleted is null order by utime desc limit {$offset},{$size}";
 
-        $ext2 = "where renter = ? and deleted is null";
-        $count = $this->orderModel->getTotal($ext2, array($this->user->id));
+        $orders = $this->orderModel->getList($select,$text1,array($type));
+
+        $ext2 = "where class = ? and deleted is null";
+        $count = $this->orderModel->getTotal($ext2, array($type));
 
         foreach ($orders as &$v) {
             $v['content'] = $this->limit($v['content'], 100, '...');

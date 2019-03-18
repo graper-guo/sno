@@ -10,7 +10,7 @@ use Nos\Http\Request;
 use Nos\Http\Response;
 use Nos\Comm\Page;
 
-class Order_GetRentOrderController extends BaseController
+class Order_GetHireOrderController extends BaseController
 {
 
     public $needAuth = true;
@@ -34,21 +34,25 @@ class Order_GetRentOrderController extends BaseController
     public function indexAction()
     {
         $size = $this->params['size'];
+
         $offset = Page::getLimitData($this->params['page'],$size);
         $select = array('id','title','status','content','price','utime','renter');
-        $text1 = "where hired =? and 'deleted' is null order by utime desc limit {$offset},{$size}";
+        $text1 = "where hirer =? and deleted is null order by utime desc limit {$offset},{$size}";
+
         $orders = $this->orderModel->getList($select,$text1,array($this->user->id));
-        $ext2 = "where hired = ? and `deleted` is null";
+
+        $ext2 = "where hirer = ? and deleted is null";
         $count = $this->orderModel->getTotal($ext2, array($this->user->id));
 
         foreach ($orders as &$v) {
             $v['content'] = $this->limit($v['content'], 100, '...');
             if (!empty($v['renter'])) {
-                $sender = $this->userModel->getById($v['renter'], array('avatar'));
+                $sender = $this->userModel->getById($v['renter']);
                 $v['renter_avatar'] = $sender['avatar'];
             }
             unset($v['renter']);
         }
+
         $pageData = Page::paginate($count, $this->params['page'], $size);
         Response::apiSuccess(array_merge(array('data' => $orders), $pageData));
     }

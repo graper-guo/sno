@@ -73,14 +73,16 @@ abstract class BaseController extends Controller_Abstract{
             Response::apiUnauthorized();
         }
         try{
-            $key = Config::get('wx');
+            //$key = Config::get('wx');
+            $config = new Ini(APP_PATH . '/config/common.ini', ini_get('yaf.environ'));
+            $config = $config->toArray();
+            $key = $config['JWT']['key'];
             $user = JWT::decode($frontToken, $key ,['HS256']);
-
         }catch (\Exception $e){
             Log::notice('auth|decode_token_failed|msg:' . $e->getMessage() . '|frontToken:'. $frontToken);
             Response::apiUnauthorized();
         }
-        $redisKey = sprintf(self::REDIS_TOKEN_PREFIX, $user->ucid);
+        $redisKey = sprintf(self::REDIS_TOKEN_PREFIX, $user->phone);
         $token = Redis::get($redisKey);//查redis里token，比较
         if ($frontToken !== $token) {
             Log::notice('auth|front_token_not_equals_redis_token|front_token:' . $frontToken . '|redis_token:' . $token);

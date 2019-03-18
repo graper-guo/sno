@@ -10,7 +10,7 @@ use Nos\Http\Request;
 use Nos\Http\Response;
 use Nos\Comm\Page;
 
-class Order_GetRentOrderController extends BaseController
+class Order_GetOrderListController extends BaseController
 {
 
     public $needAuth = true;
@@ -34,13 +34,15 @@ class Order_GetRentOrderController extends BaseController
     public function indexAction()
     {
         $size = $this->params['size'];
+
         $offset = Page::getLimitData($this->params['page'],$size);
         $select = array('id','title','status','content','price','utime','renter');
-        $text1 = "where renter =? and deleted is null order by utime desc limit {$offset},{$size}";
-        $orders = $this->orderModel->getList($select,$text1,array($this->user->id));
+        $text1 = "where status = 1 and deleted is null order by utime desc limit {$offset},{$size}";
 
-        $ext2 = "where renter = ? and deleted is null";
-        $count = $this->orderModel->getTotal($ext2, array($this->user->id));
+        $orders = $this->orderModel->getList($select,$text1);
+
+        $ext2 = "where deleted is null";
+        $count = $this->orderModel->getTotal($ext2);
 
         foreach ($orders as &$v) {
             $v['content'] = $this->limit($v['content'], 100, '...');

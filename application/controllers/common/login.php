@@ -67,6 +67,13 @@ class Common_LoginController extends BaseController
     {
         $phone = $this->params['phone'];
         $frontCode = $this->params['code'];
+        $sex = $this->params['sex'];
+        $arr = [
+            0 => '未知',
+            1 => '男',
+            2 => '女'
+        ];
+        $sex = $arr[$sex];
         $key = sprintf(self::REDIS_SMS_VERIFY,$phone);
         $backCode = Redis::get($key);
         if($frontCode != $backCode){
@@ -76,10 +83,11 @@ class Common_LoginController extends BaseController
         $openId = Wx::getOpenid($this->params['wxCode']);
 
         $data = [
-          'phone' => $phone,
-          'name'  => $this->params['nickname'],
-          'avatar' => $this->params['avatar'],
-          'openid' => $openId
+            'phone' => $phone,
+            'name' => $this->params['nickname'],
+            'avatar' => $this->params['avatar'],
+            'openid' => $openId,
+            'sex' => $sex
         ];
 
         $user = $this->getLatestUser($data);
@@ -93,7 +101,7 @@ class Common_LoginController extends BaseController
         $key = $config['JWT']['key'];
         $token = JWT::encode($data,$key);
 
-        $redisKey = sprintf(self::REDIS_TOKEN_PREFIX, $data['ucid']);
+        $redisKey = sprintf(self::REDIS_TOKEN_PREFIX, $data['phone']);
         Redis::set($redisKey, $token, 2678400);
         return $token;
     }

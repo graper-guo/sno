@@ -38,22 +38,37 @@ class Order_GetOrdersController extends BaseController
         $size = $this->params['size'];
         $type = $this->params['type'];
 
+        $now = date('Y-m-d H:i:s');
         $offset = Page::getLimitData($this->params['page'],$size);
-        $select = array('id','title','status','content','price','utime','renter');
-        $text1 = "where class = ? and deleted is null order by utime desc limit {$offset},{$size}";
+        $select = array('id','title','status','content','price','utime','ctime','longitude','latitude','renter','hirer','is_rent');
+        $text1 = "where status = ? and class = ? and deleted is null and begin < ? and end > ? order by ctime desc limit {$offset},{$size}";
+        $bind = array(Order_OrderModel::STATUS_RELEASED, $type , $now, $now);
 
-        $orders = $this->orderModel->getList($select,$text1,array($type));
+        $orders = $this->orderModel->getList($select,$text1,$bind);
 
-        $ext2 = "where class = ? and deleted is null";
-        $count = $this->orderModel->getTotal($ext2, array($type));
+        $count = count($orders);
 
         foreach ($orders as &$v) {
             $v['content'] = $this->limit($v['content'], 100, '...');
             if (!empty($v['renter'])) {
                 $sender = $this->userModel->getById($v['renter'], array('avatar'));
                 $v['renter_avatar'] = $sender['avatar'];
+            }elseif (!empty($v['hirer'])) {
+                $sender = $this->userModel->getById($v['hirer'], array('avatar'));
+                $v['renter_avatar'] = $sender['avatar'];
             }
             unset($v['renter']);
+        }
+
+        $curLng = $this->params['longitude'];
+        $curLat = $this->params['latitude'];
+        foreach ($orders as $k => $order){
+            isset($order['longitude']) && $orderLng = $order['longitude'];
+            isset($order['latitude']) && $orderLat = $order['latitude'];
+            if (!isset($orderLng) | !isset($orderLat)){
+                continue;
+            }
+            $orders[$k]['distance'] = $this->orderModel->getDistance($curLng, $curLat, $orderLng, $orderLat);
         }
 
         $pageData = Page::paginate($count, $this->params['page'], $size);

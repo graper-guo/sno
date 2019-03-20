@@ -37,7 +37,7 @@ class Order_GetOrderDetailController extends BaseController
         $hirer = $this->userModel->getById($order['hirer']);
         Response::apiSuccess(array_merge($order, array(
             'renter' => $renter,
-            'hirer' => $hirer
+            'hirer' => $hirer,
         )));
     }
 }

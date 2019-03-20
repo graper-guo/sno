@@ -36,8 +36,8 @@ class Order_GetHireOrderController extends BaseController
         $size = $this->params['size'];
 
         $offset = Page::getLimitData($this->params['page'],$size);
-        $select = array('id','title','status','content','price','utime','renter');
-        $text1 = "where hirer =? and deleted is null order by utime desc limit {$offset},{$size}";
+        $select = array('id','title','status','content','price','utime','renter','hirer');
+        $text1 = "where hirer =? and deleted is null order by ctime desc limit {$offset},{$size}";
 
         $orders = $this->orderModel->getList($select,$text1,array($this->user->id));
 
@@ -46,8 +46,8 @@ class Order_GetHireOrderController extends BaseController
 
         foreach ($orders as &$v) {
             $v['content'] = $this->limit($v['content'], 100, '...');
-            if (!empty($v['renter'])) {
-                $sender = $this->userModel->getById($v['renter']);
+            if (!empty($v['hirer'])) {
+                $sender = $this->userModel->getById($v['hirer']);
                 $v['renter_avatar'] = $sender['avatar'];
             }
             unset($v['renter']);

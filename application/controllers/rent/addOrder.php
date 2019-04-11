@@ -26,6 +26,7 @@ class Rent_AddOrderController extends BaseController{
             'beginTime' => 'required|dateTime',
             'endTime' => 'required|dateTime',
             'type' => 'required',
+            'types' => 'required',
             'price' => 'required',
             'longitude' => 'required',
             'latitude' => 'required'
@@ -46,12 +47,16 @@ class Rent_AddOrderController extends BaseController{
         $data['begin'] = $this->params['beginTime'];
         $data['end'] = $this->params['endTime'];
         $data['class'] = $this->params['type'];
-        $data['is_rent'] = 1;
+        $data['is_rent'] = $this->params['types'];
         $data['status'] = Order_OrderModel::STATUS_RELEASED;
         $data['price'] = $this->params['price'];
         $data['longitude'] = $this->params['longitude'];
         $data['latitude'] = $this->params['latitude'];
-        $data['hirer'] = $this->user->id;
+        if($data['is_rent'] === 1) {
+            $data['hirer'] = $this->user->id;
+        }else{
+            $data['renter'] = $this->user->id;
+        }
 
         $time = date('Y-m-d H:i:s');
         $data['ctime'] = $time;

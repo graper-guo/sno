@@ -36,7 +36,7 @@ class Order_GetHireOrderController extends BaseController
         $size = $this->params['size'];
 
         $offset = Page::getLimitData($this->params['page'],$size);
-        $select = array('id','title','status','content','price','utime','renter','hirer');
+        $select = array('id','title','status','content','price','utime','ctime','renter','hirer');
         $text1 = "where hirer =? and deleted is null order by ctime desc limit {$offset},{$size}";
 
         $orders = $this->orderModel->getList($select,$text1,array($this->user->id));

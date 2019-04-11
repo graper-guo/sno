@@ -35,7 +35,7 @@ class Order_GetRentOrderController extends BaseController
     {
         $size = $this->params['size'];
         $offset = Page::getLimitData($this->params['page'],$size);
-        $select = array('id','title','status','content','price','utime','renter');
+        $select = array('id','title','status','content','price','utime','ctime','renter');
         $text1 = "where renter =? and deleted is null order by ctime desc limit {$offset},{$size}";
         $orders = $this->orderModel->getList($select,$text1,array($this->user->id));
 

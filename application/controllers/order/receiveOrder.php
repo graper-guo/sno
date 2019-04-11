@@ -16,6 +16,7 @@ class Order_ReceiveOrderController extends BaseController
 
     public $needAuth = true;
     private $orderModel;
+    public $user;
 
     public function checkParam()
     {

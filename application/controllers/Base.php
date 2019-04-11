@@ -67,7 +67,6 @@ abstract class BaseController extends Controller_Abstract{
      */
     protected function auth(){
         $frontToken = Request::header('Authorization');
-
         if (empty($frontToken)) {
             Log::notice('auth|header_token_empty');
             Response::apiUnauthorized();

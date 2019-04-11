@@ -37,7 +37,7 @@ class Order_GetOrderListController extends BaseController
 
         $offset = Page::getLimitData($this->params['page'],$size);
         $now = date('Y-m-d H:i:s');
-        $select = array('id','title','status','content','price','utime','ctime','longitude','latitude','renter','hirer');
+        $select = array('id','title','status','content','price','utime','ctime','longitude','latitude','renter','hirer','is_rent');
 
         if (!isset($this->params['type'])){
             $ext = "where status = ? and begin < ? and end > ? order by ctime desc limit {$offset},{$size}";

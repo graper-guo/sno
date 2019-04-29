@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Nos—基于Yaf && 专注于接口开发的PHP框架
 <a href="https://packagist.org/packages/jiangbaiyan/nos"><img src="https://poser.pugx.org/jiangbaiyan/nos/v/stable" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/jiangbaiyan/nos"><img src="https://poser.pugx.org/jiangbaiyan/nos/downloads" alt="Total Downloads"></a>

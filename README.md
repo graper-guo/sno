@@ -5,7 +5,6 @@
 <a href="https://packagist.org/packages/jiangbaiyan/nos"><img src="https://poser.pugx.org/jiangbaiyan/nos/v/unstable" alt="Latest Unstable Version"></a>
 <a href="https://packagist.org/packages/jiangbaiyan/nos"><img src="https://poser.pugx.org/jiangbaiyan/nos/license" alt="License"></a>
 ### 在yaf框架基础上为中小型接口开发业务场景做了适配
-### 示例项目：https://github.com/jiangbaiyan/bangnos
  - 基本类库
    - 业务配置操作类
    - Db操作类
